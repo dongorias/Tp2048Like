@@ -1,0 +1,61 @@
+name: tp2048
+description: "A new Flutter project."
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.3
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+
+  # Easily detect Swipes
+  flutter_swipe_detector: ^2.0.0
+
+  # icon
+  flutter_svg: ^2.0.11
+
+  #navigation
+  auto_route: ^9.2.2
+
+  # Manage State
+  provider: ^6.1.2
+
+  #animation
+  confetti: ^0.8.0
+
+  #audioplayers:
+  audioplayers: ^6.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^4.0.0
+
+flutter:
+
+  fonts:
+    - family: GoreRegular
+      fonts:
+        - asset: assets/fonts/Gore_Regular.otf
+          style: italic
+
+
+  uses-material-design: true
+
+  assets:
+    - assets/fonts/
+    - assets/svgs/
+    - assets/images/
+    - assets/sounds/
+
+
+
+
+
+
