@@ -6,24 +6,26 @@ import 'package:flutter/material.dart';
 void main() => runApp(const ConfettiSample());
 
 class ConfettiSample extends StatelessWidget {
-  const ConfettiSample({Key? key}) : super(key: key);
+  const ConfettiSample({super.key});
 
   @override
   Widget build(BuildContext context) => MaterialApp(
     title: 'Confetti',
     home: Scaffold(
       backgroundColor: Colors.grey[900],
-      body: MyApp(),
+      body: const MyApp(),
     ),
   );
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
-  _MyAppState createState() => _MyAppState();
+  MyAppState createState() => MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class MyAppState extends State<MyApp> {
   late ConfettiController _controllerCenter;
   late ConfettiController _controllerCenterRight;
   late ConfettiController _controllerCenterLeft;

@@ -11,7 +11,7 @@ extension ThemeGetterExtension on BuildContext {
 
   Color get colorForeground => coloreSheme.onSurface;
 
-  Color get colorAccent => const Color(0xff7C77B2);
+  Color get colorAccent => const Color(0xffFE964F);
 
   TextStyle get _text => textTheme.bodyMedium!;
 

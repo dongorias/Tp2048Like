@@ -10,6 +10,7 @@ import 'package:tp2048/ui/game/widget/game_over.dart';
 import 'package:tp2048/ui/game/widget/grid_painter.dart';
 
 import '../../controller/game_controller.dart';
+import 'setting_screen.dart';
 import 'widget/quitter_popup.dart';
 import 'widget/timer.dart';
 
@@ -86,17 +87,27 @@ class GameScreenState extends State<GameScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: context.colorAccent,
         title: Text(
           'f2048',
           style: context.textTitle.copyWith(color: Colors.white),
         ),
         actions: [
+          Text("à propos de"),
           Container(
               margin: const EdgeInsets.only(right: 20),
               child: IconButton(
-                onPressed: () {},
-                icon: const Icon(Icons.info),
+                onPressed: () => showDialog<String>(
+                    context: context,
+                    builder: (BuildContext context) => const AlertDialog(
+                        title: Text('Informations'),
+                        content: Text(
+                            'Jeu crée par Corentin MALBET, Tom THERET, Don Arias AGOKOLI'))),
+                icon: const Icon(
+                  Icons.info_outline,
+                  color: Colors.white,
+                ),
               ))
         ],
       ),
@@ -209,7 +220,7 @@ class GameScreenState extends State<GameScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           SvgPicture.asset("assets/svgs/ic_info.svg"),
-                          SvgPicture.asset("assets/svgs/ic_setting.svg"),
+                          InkWell(onTap: ()=> Navigator.pushNamed(context, '/settings'), child: SvgPicture.asset("assets/svgs/ic_setting.svg")),
                         ],
                       )
                     ],

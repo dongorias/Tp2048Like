@@ -257,7 +257,6 @@ class GameController with ChangeNotifier {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       _currentSeconds++;
       notifyListeners();
-      log("_currentSeconds==>$_currentSeconds");
     });
   }
 

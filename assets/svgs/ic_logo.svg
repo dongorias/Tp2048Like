@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300">
+    <!-- Background -->
+    <rect width="300" height="300" fill="#faf8ef" rx="15" ry="15"/>
+
+    <!-- Grid of tiles -->
+    <g transform="translate(50, 50)">
+        <!-- Row 1 -->
+        <rect x="0" y="0" width="45" height="45" fill="#eee4da" rx="5" ry="5"/>
+        <rect x="55" y="0" width="45" height="45" fill="#eee4da" rx="5" ry="5"/>
+        <rect x="110" y="0" width="45" height="45" fill="#edc403" rx="5" ry="5"/>
+        <rect x="165" y="0" width="45" height="45" fill="#f67c5f" rx="5" ry="5"/>
+
+        <!-- Row 2 -->
+        <rect x="0" y="55" width="45" height="45" fill="#eee4da" rx="5" ry="5"/>
+        <rect x="55" y="55" width="45" height="45" fill="#edcc61" rx="5" ry="5"/>
+        <rect x="110" y="55" width="45" height="45" fill="#f67c5f" rx="5" ry="5"/>
+        <rect x="165" y="55" width="45" height="45" fill="#f65e3b" rx="5" ry="5"/>
+
+        <!-- Row 3 -->
+        <rect x="0" y="110" width="45" height="45" fill="#edcc61" rx="5" ry="5"/>
+        <rect x="55" y="110" width="45" height="45" fill="#f67c5f" rx="5" ry="5"/>
+        <rect x="110" y="110" width="45" height="45" fill="#f65e3b" rx="5" ry="5"/>
+        <rect x="165" y="110" width="45" height="45" fill="#edcc61" rx="5" ry="5"/>
+
+        <!-- Row 4 -->
+        <rect x="0" y="165" width="45" height="45" fill="#f67c5f" rx="5" ry="5"/>
+        <rect x="55" y="165" width="45" height="45" fill="#f65e3b" rx="5" ry="5"/>
+        <rect x="110" y="165" width="45" height="45" fill="#edcc61" rx="5" ry="5"/>
+        <rect x="165" y="165" width="45" height="45" fill="#eee4da" rx="5" ry="5"/>
+    </g>
+
+    <!-- Title -->
+    <text x="150" y="260"
+        font-family="Arial, sans-serif"
+        font-size="40"
+        font-weight="bold"
+        fill="#776e65"
+        text-anchor="middle">
+        2048
+    </text>
+
+    <!-- Numbers on tiles -->
+    <text x="72" y="85"
+        font-family="Arial, sans-serif"
+        font-size="16"
+        fill="#776e65"
+        text-anchor="middle">2</text>
+    <text x="127" y="85"
+        font-family="Arial, sans-serif"
+        font-size="16"
+        fill="#776e65"
+        text-anchor="middle">4</text>
+    <text x="182" y="85"
+        font-family="Arial, sans-serif"
+        font-size="16"
+        fill="white"
+        text-anchor="middle">8</text>
+    <text x="237" y="85"
+        font-family="Arial, sans-serif"
+        font-size="16"
+        fill="white"
+        text-anchor="middle">16</text>
+
+    <!-- Shine effects -->
+    <g opacity="0.2">
+        <path d="M50 50 L70 50 L60 60 Z" fill="white"/>
+        <path d="M105 105 L125 105 L115 115 Z" fill="white"/>
+        <path d="M160 160 L180 160 L170 170 Z" fill="white"/>
+    </g>
+</svg>
