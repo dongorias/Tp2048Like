@@ -1,44 +1,50 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 
+import '../ui/game/game_screen.dart';
 import '../utils/sound_player.dart';
+
 enum SoundType { win, lose, swip }
+
 class GameController with ChangeNotifier {
   List<List<int>> board = List.generate(4, (i) => List.filled(4, 0));
 
-   final SoundPlayer _soundPlayer = SoundPlayer();
+  final SoundPlayer _soundPlayer = SoundPlayer();
 
-  int _compteurCoups = 0;
 
   bool _gameOver = false;
   bool get gameOver => _gameOver;
 
+  final ValueNotifier<bool> _timerReset = ValueNotifier(false);
+  ValueNotifier<bool> get timerReset => _timerReset;
 
+  final ValueNotifier<bool> _timerRestart = ValueNotifier(false);
+  ValueNotifier<bool> get timerRestart => _timerRestart;
+
+
+  StreamSubscription<int>? timerSubscription;
 
   bool _gameWinner = false;
   bool get gameWinner => _gameWinner;
 
-  int get compteurCoups => _compteurCoups;
+  int _moveCount = 0;
+  int get moveCount => _moveCount;
 
-  bool _isRunning = false;
 
-  bool get isRunning => _isRunning;
-
-  late Timer _timer;
-  int _currentSeconds = 0;
-
-  int _levelGoal = 2048;
-
-  int get levelGoal => _levelGoal;
+  But _levelGoal = But.b2048;
+  But get levelGoal => _levelGoal;
 
   late ConfettiController confettiController;
 
   bool _showQuitConfirmation = false;
+
   bool get showQuitConfirmation => _showQuitConfirmation;
+
+  bool _isSoundEnabled = true;
+  bool get isSoundEnabled => _isSoundEnabled;
 
   GameController() {
     confettiController = ConfettiController(
@@ -49,6 +55,7 @@ class GameController with ChangeNotifier {
   @override
   void dispose() {
     super.dispose();
+    timerSubscription?.cancel();
     confettiController.dispose();
   }
 
@@ -58,9 +65,32 @@ class GameController with ChangeNotifier {
     }
   }
 
+void winnerFinish(){
+  _gameWinner = false;
+  _moveCount = 0;
+  reset();
+  notifyListeners();
+}
+
+void gameOverReset(){
+  _gameWinner = false;
+  _moveCount = 0;
+  resetTimer(true);
+  reset();
+  notifyListeners();
+}
+
+  void handleValueChanged(But? newValue) {
+    if (newValue == null) return;
+    _levelGoal = newValue;
+    reset();
+    resetTimer(true);
+    _moveCount = 0;
+    notifyListeners();
+  }
 
   void quitConfirmation() {
-    _showQuitConfirmation =true;
+    _showQuitConfirmation = true;
     notifyListeners();
   }
 
@@ -71,27 +101,14 @@ class GameController with ChangeNotifier {
     // Ajoute une nouvelle tuile pour commencer
     addNewTile();
     addNewTile();
-    //resetTimer();
-    //startTimer();
     _gameOver = false;
-    // Notifie les écouteurs du changement
     notifyListeners();
   }
 
-  void resetCompte(){
-    _compteurCoups = 0;
-    notifyListeners();
-  }
 
-  void setGoal(int goal) {
-    _levelGoal = goal;
-    reset();
-    notifyListeners();
-  }
-
-  void increment() {
+  void _incrementMove() {
     if (_gameOver) return;
-    _compteurCoups++;
+    _moveCount++;
     notifyListeners();
   }
 
@@ -116,7 +133,7 @@ class GameController with ChangeNotifier {
   bool isGameWon() {
     for (int i = 0; i < 4; i++) {
       for (int j = 0; j < 4; j++) {
-        if (board[i][j] == _levelGoal) return true;
+        if (board[i][j] == _levelGoal.value) return true;
       }
     }
     notifyListeners();
@@ -126,8 +143,10 @@ class GameController with ChangeNotifier {
   void checkIfGameOverOrGameWon() {
     if (isGameOver()) {
       _gameOver = true;
+      resetTimer(true);();
     } else if (isGameWon()) {
       _gameWinner = true;
+      resetTimer(true);();
       checkAndPlayConfetti(true);
     }
     notifyListeners();
@@ -147,7 +166,8 @@ class GameController with ChangeNotifier {
 
     if (emptyPositions.isNotEmpty) {
       // Choisir une position vide aléatoire
-      int randomIndex = emptyPositions[math.Random().nextInt(emptyPositions.length)];
+      int randomIndex =
+          emptyPositions[math.Random().nextInt(emptyPositions.length)];
       int row = randomIndex ~/ 4; // Divise par 4 pour obtenir la ligne
       int col = randomIndex % 4; // Modulo 4 pour obtenir la colonne
 
@@ -162,44 +182,38 @@ class GameController with ChangeNotifier {
     notifyListeners();
   }
 
-  void moveLeft() {
-    for (int i = 0; i < 4; i++) {
-      board[i] = _mergeRow(board[i]);
-    }
+  // Movement methods with shared logic
+  void _performMove(void Function() movementLogic) {
+    movementLogic();
     checkIfGameOverOrGameWon();
     addNewTile();
-    increment();
+    _incrementMove();
+    _restartTimer();
     playSound(SoundType.swip);
     notifyListeners();
   }
 
-  void moveRight() {
+  void moveLeft() =>_performMove((){
+    for (int i = 0; i < 4; i++) {
+      board[i] = _mergeRow(board[i]);
+    }
+  });
+
+  void moveRight() =>_performMove((){
     for (int i = 0; i < 4; i++) {
       board[i] = _mergeRow(board[i].reversed.toList()).reversed.toList();
     }
-    checkIfGameOverOrGameWon();
-    addNewTile();
-    increment();
-    playSound(SoundType.swip);
-    notifyListeners();
-  }
+  });
 
-  void moveUp() {
+  void moveUp() =>_performMove((){
     _transposeBoard();
-
     for (int i = 0; i < 4; i++) {
       board[i] = _mergeRow(board[i]);
     }
-
     _transposeBoard();
-    checkIfGameOverOrGameWon();
-    addNewTile();
-    increment();
-    playSound(SoundType.swip);
-    notifyListeners();
-  }
+  });
 
-  void moveDown() {
+  void moveDown() =>_performMove((){
     _transposeBoard();
 
     for (int i = 0; i < 4; i++) {
@@ -207,12 +221,7 @@ class GameController with ChangeNotifier {
     }
 
     _transposeBoard();
-    checkIfGameOverOrGameWon();
-    addNewTile();
-    increment();
-    playSound(SoundType.swip);
-    notifyListeners();
-  }
+  });
 
   List<int> _mergeRow(List<int> row) {
     List<int> newRow = [];
@@ -252,48 +261,19 @@ class GameController with ChangeNotifier {
   }
 
 
-  void startTimer() {
-    _isRunning = true;
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      _currentSeconds++;
-      notifyListeners();
-    });
-  }
-
-  void stopTimer() {
-    _timer.cancel();
-    _isRunning = false;
+  void resetTimer(bool value) {
+    _timerReset.value = value;
     notifyListeners();
   }
-
-  void resetTimer() {
-    _currentSeconds = 0;
-    _isRunning = false;
-    if (!_isRunning) {
-      startTimer();
-    }
+  void _restartTimer() {
+    _timerRestart.value = true;
     notifyListeners();
   }
-
-  void pauseTimer() {
-    stopTimer();
-  }
-
-  String get timeDisplay {
-    int minutes = _currentSeconds ~/ 60;
-    int seconds = _currentSeconds % 60;
-    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
-  }
-
-
-
-  bool _isSoundEnabled = true;
-
-  bool get isSoundEnabled => _isSoundEnabled;
 
   void toggleSound() {
     _isSoundEnabled = !_isSoundEnabled;
     notifyListeners();
+
   }
 
   void playSound(SoundType soundType) {
@@ -311,4 +291,5 @@ class GameController with ChangeNotifier {
       }
     }
   }
+
 }

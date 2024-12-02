@@ -13,12 +13,12 @@ class GameOverOverlay extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Positioned(
+        Positioned.fill(
             child: Container(
                 color: Colors.black.withOpacity(
           0.7,
         ))),
-        Positioned(
+        Positioned.fill(
           left: 0,
           right: 0,
           top: MediaQuery.sizeOf(context).height / 3,

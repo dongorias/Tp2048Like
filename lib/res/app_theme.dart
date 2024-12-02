@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-String _fontFamily = "GoreRegular";
+String _fontFamily = "Electrolize";
 
 extension ThemeGetterExtension on BuildContext {
   ThemeData get themeData => Theme.of(this);

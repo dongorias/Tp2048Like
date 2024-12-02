@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:tp2048/res/app_theme.dart';
+import 'package:widget_and_text_animator/widget_and_text_animator.dart';
 
 import '../game/game_screen.dart';
 
@@ -14,7 +16,7 @@ class IntroScreen extends StatefulWidget {
 class _IntroScreenState extends State<IntroScreen> {
   @override
   void initState() {
-    Timer(const Duration(seconds: 5), (){
+    Timer(const Duration(seconds: 3), () {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const GameScreen()),
@@ -33,15 +35,23 @@ class _IntroScreenState extends State<IntroScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // Logo
-            Container(
-              width: 200,
-              height: 200,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(300))
+            WidgetAnimator(
+              atRestEffect: WidgetRestingEffects.swing(),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(50)),
+                child: Image.asset(
+                  "assets/images/logo.png",
+                  height: 100.0,
+                  width: 100.0,
+                ),
               ),
-              child: Image.asset("assets/images/logo.png"),
             ),
+            const SizedBox(height: 20,),
+            TextAnimator(
+              "TP 2048 Like",
+              style: context.textBody,
+              spaceDelay: Duration(seconds: 1),
+            )
           ],
         ),
       ),

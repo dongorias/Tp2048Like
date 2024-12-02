@@ -54,6 +54,7 @@ class GridPainter extends CustomPainter {
     TextSpan span = TextSpan(
       text: value.toString(),
       style: TextStyle(
+        fontFamily: "Electrolize",
         fontSize: size / 2,
         fontWeight: FontWeight.bold,
       ),

@@ -122,7 +122,7 @@ class OptionButton extends StatelessWidget {
   }
 
   void _handleOptionTap(int value, context) {
-    Provider.of<GameController>(context, listen: false).setGoal(value);
+    //Provider.of<GameController>(context, listen: false).setGoal(value);
     Navigator.pop(context);
   }
 }

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tp2048/res/app_theme.dart';
 
 import 'controller/game_controller.dart';
+import 'ui/about/about_screen.dart';
 import 'ui/game/game_screen.dart';
-import 'ui/game/setting_screen.dart';
 import 'ui/intro/intro_screen.dart';
 
 void main() {
@@ -25,11 +26,11 @@ class MyApp extends StatelessWidget {
         routes: {
           '/intro': (context) => const IntroScreen(),
           '/game': (context) => const GameScreen(),
-          '/settings': (context) => const SettingScreen(),
+          '/about': (context) => const AboutScreen(),
         },
-        title: 'Flutter Demo',
+        title: '2048 Like',
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          colorScheme: ColorScheme.fromSeed(seedColor: context.colorAccent),
           useMaterial3: true,
         ),
         home: const GameScreen());

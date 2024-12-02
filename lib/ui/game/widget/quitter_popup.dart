@@ -21,7 +21,7 @@ class QuitConfirmationPopup extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
+                const Text(
                   'Êtes-vous sûr de vouloir quitter?',
                 ),
                 const SizedBox(height: 16),
@@ -35,7 +35,7 @@ class QuitConfirmationPopup extends StatelessWidget {
                     const SizedBox(width: 8),
                     ElevatedButton(
                       onPressed: onQuit,
-                      child: const Text('Quitter'),
+                      child: const Text('Oui'),
                     ),
                   ],
                 ),

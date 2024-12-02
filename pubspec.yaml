@@ -31,6 +31,15 @@ dependencies:
   #audioplayers:
   audioplayers: ^6.1.0
 
+  #timer
+  stop_watch_timer: ^3.2.1
+
+  #shared_preferences
+  shared_preferences: ^2.3.3
+
+  # text animations
+  widget_and_text_animator: ^1.1.5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -41,9 +50,9 @@ dev_dependencies:
 flutter:
 
   fonts:
-    - family: GoreRegular
+    - family: Electrolize
       fonts:
-        - asset: assets/fonts/Gore_Regular.otf
+        - asset: assets/fonts/Electrolize-Regular.ttf
           style: italic
 
 

@@ -1,18 +1,32 @@
-import 'dart:math';
+import 'dart:math' hide log;
 
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:tp2048/res/app_theme.dart';
-import 'package:tp2048/ui/game/widget/bottom_menu.dart';
 import 'package:tp2048/ui/game/widget/game_over.dart';
 import 'package:tp2048/ui/game/widget/grid_painter.dart';
 
 import '../../controller/game_controller.dart';
-import 'setting_screen.dart';
-import 'widget/quitter_popup.dart';
-import 'widget/timer.dart';
+import 'widget/count_down_timer.dart';
+
+enum But {
+  b2048('2048', 2048),
+  b1024('1024', 1024),
+  b512('512', 512),
+  b256('256', 256);
+  //b4('4', 4);
+
+  const But(this.label, this.value);
+
+  final String label;
+  final double value;
+
+  // Méthode pour obtenir la liste des valeurs sans custom
+  static List<But> getStandardValues() {
+    return But.values.toList();
+  }
+}
 
 class GameScreen extends StatefulWidget {
   const GameScreen({super.key});
@@ -22,23 +36,21 @@ class GameScreen extends StatefulWidget {
 }
 
 class GameScreenState extends State<GameScreen> {
-  late GameController gameController;
+  late GameController gameCtlre;
 
   @override
   void initState() {
-    super.initState();
-    gameController = Provider.of<GameController>(context, listen: false);
+    gameCtlre = Provider.of<GameController>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Ajout initial de deux tuiles
-      gameController.startTimer();
-      gameController.addNewTile();
-      gameController.addNewTile();
+      gameCtlre.addNewTile();
     });
+    super.initState();
   }
 
   @override
   void dispose() {
-    gameController.dispose();
+    gameCtlre.dispose();
     super.dispose();
   }
 
@@ -47,19 +59,18 @@ class GameScreenState extends State<GameScreen> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            backgroundColor: context.colorAccent,
             content: Text(
-              'Êtes-vous sûr de vouloir quitter ?',
-              style: context.textBody.copyWith(color: Colors.white),
+              'Êtes-vous sûr de vouloir reprendre ?',
+              style: context.textBody,
             ),
             actions: <Widget>[
               TextButton(
                 style: TextButton.styleFrom(
-                  textStyle: context.textBody.copyWith(color: Colors.white),
+                  textStyle: context.textBody,
                 ),
                 child: Text(
                   'Annuler',
-                  style: context.textBody.copyWith(color: Colors.white),
+                  style: context.textBody,
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -67,12 +78,11 @@ class GameScreenState extends State<GameScreen> {
               ),
               TextButton(
                 style: TextButton.styleFrom(
-                  textStyle: context.textBody.copyWith(color: Colors.white),
+                  textStyle: context.textBody,
                 ),
-                child: Text('Quitter',
-                    style: context.textBody.copyWith(color: Colors.white)),
+                child: Text('Oui', style: context.textBody),
                 onPressed: () {
-                  gameController.reset();
+                  gameCtlre.reset();
                   Navigator.of(context).pop();
                 },
               ),
@@ -85,193 +95,215 @@ class GameScreenState extends State<GameScreen> {
   Widget build(BuildContext context) {
     double tileSize = MediaQuery.of(context).size.width / 4;
 
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: context.colorAccent,
-        title: Text(
-          'f2048',
-          style: context.textTitle.copyWith(color: Colors.white),
-        ),
-        actions: [
-          Text("à propos de"),
-          Container(
-              margin: const EdgeInsets.only(right: 20),
-              child: IconButton(
-                onPressed: () => showDialog<String>(
-                    context: context,
-                    builder: (BuildContext context) => const AlertDialog(
-                        title: Text('Informations'),
-                        content: Text(
-                            'Jeu crée par Corentin MALBET, Tom THERET, Don Arias AGOKOLI'))),
-                icon: const Icon(
-                  Icons.info_outline,
-                  color: Colors.white,
-                ),
-              ))
-        ],
-      ),
-      body: Consumer<GameController>(builder: (context, controller, child) {
-        return Stack(
-          children: [
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 24.0, vertical: 24),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const CountdownTimer(),
-                      Text(
-                        "Coups : ${controller.compteurCoups}",
-                        style:
-                            context.textCaption.copyWith(color: Colors.black),
-                      ),
-                    ],
-                  ),
-                ),
-                // SwipeDetector(
-                //
-                //   onSwipeUp: (offset) {
-                //     moveUp();
-                //     incrementCoups();
-                //   },
-                //   onSwipeDown: (offset) {
-                //     moveDown();
-                //     incrementCoups();
-                //   },
-                //   onSwipeLeft: (offset) {
-                //     moveLeft();
-                //     incrementCoups();
-                //   },
-                //   onSwipeRight: (offset) {
-                //     moveRight();
-                //     incrementCoups();
-                //   },
-                //   child: CustomPaint(
-                //     size: Size(tileSize * 4, tileSize * 4),
-                //     painter: GridPainter(board, tileSize),
-                //   ),
-
-                GestureDetector(
-                  onHorizontalDragEnd: (details) {
-                    if (details.velocity.pixelsPerSecond.dx > 0) {
-                      controller.moveRight();
-                    } else {
-                      controller.moveLeft();
-                    }
-                  },
-                  onVerticalDragEnd: (details) {
-                    if (details.velocity.pixelsPerSecond.dy > 0) {
-                      controller.moveDown();
-                    } else {
-                      controller.moveUp();
-                    }
-                  },
-                  child: CustomPaint(
-                    size: Size(tileSize * 4, tileSize * 4),
-                    painter: GridPainter(controller.board, tileSize),
-                  ),
-                ),
-                const SizedBox(
-                  height: 24,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            "But à atteindre",
-                            style: context.textBody,
-                          ),
-                          InkWell(
-                            onTap: () {
-                              showBottomMenu(context);
-                            },
-                            child: Container(
-                              width: 150,
-                              padding: const EdgeInsets.all(2),
-                              decoration: BoxDecoration(
-                                color: context.colorAccent,
-                                //borderRadius: BorderRadius.circular(20)
-                              ),
-                              child: Container(
-                                  padding: const EdgeInsets.all(5),
-                                  decoration:
-                                      const BoxDecoration(color: Colors.white),
-                                  child: Center(
-                                      child: Text(
-                                    "${controller.levelGoal}",
-                                    style: context.textCaption
-                                        .copyWith(color: Colors.black),
-                                  ))),
-                            ),
-                          )
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 24,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SvgPicture.asset("assets/svgs/ic_info.svg"),
-                          InkWell(onTap: ()=> Navigator.pushNamed(context, '/settings'), child: SvgPicture.asset("assets/svgs/ic_setting.svg")),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ],
+    return Consumer<GameController>(builder: (context, gameCtlr, child) {
+      return Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: context.colorAccent,
+            title: Text(
+              'f2048',
+              style: context.textTitle.copyWith(color: Colors.white),
             ),
-            Align(
-              alignment: Alignment.center,
-              child: ConfettiWidget(
-                confettiController: controller.confettiController,
-                blastDirection: pi / 2,
-                // maxBlastForce: 50,
-                // minBlastForce: 10,
-                emissionFrequency: 0.05,
-                // numberOfParticles: 50,
-                gravity: 0.01,
-                shouldLoop: false,
-                colors: const [
-                  Colors.green,
-                  Colors.blue,
-                  Colors.pink,
-                  Colors.orange,
-                  Colors.purple,
+            actions: [
+              Text(
+                "À propos",
+                style: context.textCaption,
+              ),
+              Container(
+                  margin: const EdgeInsets.only(right: 20),
+                  child: IconButton(
+                    onPressed: () => Navigator.pushNamed(context, '/about'),
+                    icon: const Icon(
+                      Icons.info_outline,
+                      color: Colors.white,
+                    ),
+                  )),
+              Container(
+                  margin: const EdgeInsets.only(right: 20),
+                  child: IconButton(
+                    onPressed: () => gameCtlr.toggleSound(),
+                    icon: Icon(
+                      gameCtlr.isSoundEnabled
+                          ? Icons.volume_up
+                          : Icons.volume_off,
+                      color:Colors.white,
+                    ),
+                  ))
+            ],
+          ),
+          floatingActionButton: (gameCtlr.gameWinner || gameCtlr.gameOver)
+              ? Container() // Au lieu de null, retourner un Container vide
+              : FloatingActionButton(
+                  child: const Icon(Icons.restart_alt),
+                  onPressed: () {
+                    _dialogBuilder(context);
+                  },
+                ),
+          body: Stack(
+            children: [
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24.0, vertical: 24),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        CountdownTimer(gameCtlr:  gameCtlr,),
+                        Text(
+                          "Coups : ${gameCtlr.moveCount}",
+                          style:
+                              context.textCaption.copyWith(color: Colors.black),
+                        ),
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onHorizontalDragEnd: (details) {
+                      if (details.velocity.pixelsPerSecond.dx > 0) {
+                        gameCtlr.moveRight();
+                      } else {
+                        gameCtlr.moveLeft();
+                      }
+                    },
+                    onVerticalDragEnd: (details) {
+                      if (details.velocity.pixelsPerSecond.dy > 0) {
+                        gameCtlr.moveDown();
+                      } else {
+                        gameCtlr.moveUp();
+                      }
+                    },
+                    child: CustomPaint(
+                      size: Size(tileSize * 4, tileSize * 4),
+                      painter: GridPainter(gameCtlr.board, tileSize),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 24,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Column(
+                      children: [
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            DropdownButtonFormField<But>(
+                              value: gameCtlr.levelGoal,
+                              decoration: InputDecoration(
+                                labelText: 'But à atteindre',
+                                labelStyle: context.textBody,
+                                border: const OutlineInputBorder(),
+                              ),
+                              items: But.values.map((But value) {
+                                return DropdownMenuItem<But>(
+                                  value: value,
+                                  child: Text(value.label, style: context.textCaption.copyWith(
+                                    color: Colors.black
+                                  ),),
+                                );
+                              }).toList(),
+                              onChanged: gameCtlr.handleValueChanged,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
-            ),
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: Padding(
-                padding: const EdgeInsets.only(
-                    bottom: kBottomNavigationBarHeight, right: 20),
-                child: FloatingActionButton(
-                    child: const Icon(Icons.restart_alt),
-                    onPressed: () {
-                      _dialogBuilder(context);
-                      //gameController.reset();
-                    }),
-              ),
-            ),
-            if (controller.gameOver)
-              GameOverOverlay(
-                onNewGame: () {
-                  gameController.reset();
-                  Navigator.canPop(context);
-                },
-              ),
-          ],
-        );
-      }),
+              if (gameCtlr.gameOver)
+                GameOverOverlay(
+                  onNewGame: () {
+                    gameCtlr.gameOverReset();
+                  },
+                ),
+
+              if (gameCtlre.gameWinner)
+                // Overlay content
+                Positioned(
+                  child: Stack(
+                    children: [
+                      Container(
+                        color: Colors.black54,
+                        child: Center(
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 20),
+                            padding: const EdgeInsets.all(20.0),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Vous avez atteint le score ${gameCtlr.levelGoal.value.toInt()} ! 🎉\nSouhaitez-vous continuer à jouer ou terminer la partie ?',
+                                  style: context.textCaption
+                                      .copyWith(color: Colors.black),
+                                  textAlign: TextAlign.center,
+                                ),
+                                const SizedBox(height: 20.0),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    TextButton(
+                                        onPressed: () {
+                                          gameCtlre.winnerFinish();
+                                        },
+                                        child: const Text("Terminer")),
+                                    TextButton(
+                                        onPressed: () {},
+                                        child: const Text("Continuer")),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        left: 0,
+                        child: ConfettiAnim(gameCtlr: gameCtlr,),
+                      ),
+                      Positioned(
+                        right: 0,
+                        child: ConfettiAnim(gameCtlr: gameCtlr,),
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ));
+    });
+  }
+}
+
+class ConfettiAnim extends StatelessWidget {
+  const ConfettiAnim({super.key, required this.gameCtlr});
+
+  final GameController gameCtlr;
+
+  @override
+  Widget build(BuildContext context) {
+    return ConfettiWidget(
+      confettiController: gameCtlr.confettiController,
+      blastDirection: pi / 2,
+      maxBlastForce: 50,
+      minBlastForce: 10,
+      emissionFrequency: 0.05,
+      numberOfParticles: 50,
+      blastDirectionality: BlastDirectionality.explosive,
+      gravity: 0.01,
+      shouldLoop: false,
+      colors: const [
+        Colors.green,
+        Colors.blue,
+        Colors.pink,
+        Colors.orange,
+        Colors.purple,
+      ],
     );
   }
 }
