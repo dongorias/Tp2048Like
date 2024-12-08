@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../res/color/colors.dart';
 
+// Classe responsable du rendu graphique de la grille de jeu
 class GridPainter extends CustomPainter {
   final double decalage = 4.0;
   final List<List<int>> board;

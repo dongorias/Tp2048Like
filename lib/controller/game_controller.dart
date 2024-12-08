@@ -115,19 +115,18 @@ void gameOverReset(){
   bool isGameOver() {
     for (int i = 0; i < 4; i++) {
       for (int j = 0; j < 4; j++) {
-        if (board[i][j] == 0) return false; // Il y a encore des cases vides
-
-        // Vérifier si des mouvements sont possibles (fusion)
-        if ((i > 0 && board[i][j] == board[i - 1][j]) || // Vers le haut
-            (i < 3 && board[i][j] == board[i + 1][j]) || // Vers le bas
-            (j > 0 && board[i][j] == board[i][j - 1]) || // Vers la gauche
+        if (board[i][j] == 0) return false; // Cases vides disponibles
+        
+        // Vérifie les fusions possibles dans toutes les directions
+        if ((i > 0 && board[i][j] == board[i - 1][j]) || 
+            (i < 3 && board[i][j] == board[i + 1][j]) ||
+            (j > 0 && board[i][j] == board[i][j - 1]) ||
             (j < 3 && board[i][j] == board[i][j + 1])) {
-          // Vers la droite
           return false;
         }
       }
     }
-    return true; // Pas de cases vides ni de fusions possibles
+    return true;
   }
 
   bool isGameWon() {
