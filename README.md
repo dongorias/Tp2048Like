@@ -40,7 +40,7 @@ TP2048 est une réimplémentation moderne du célèbre jeu 2048 développée ave
 
 1. Clonez le repository
 
-`git clone https://github.com/votre-username/tp2048.git`
+`git clone github.com/dongorias/Tp2048Like.git`
 
 3. Installez les dépendances
 
