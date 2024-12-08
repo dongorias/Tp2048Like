@@ -39,16 +39,16 @@ TP2048 est une réimplémentation moderne du célèbre jeu 2048 développée ave
 ## 📦 Installation
 
 1. Clonez le repository
-bash
-git clone https://github.com/votre-username/tp2048.git
 
-2. Installez les dépendances
-bash
-flutter pub get
+`git clone https://github.com/votre-username/tp2048.git`
 
-3. Lancez l'application
-bash
-flutter run
+3. Installez les dépendances
+
+`flutter pub get`
+
+4. Lancez l'application
+
+`flutter run`
 
 
 ## 🎯 Objectifs du projet
