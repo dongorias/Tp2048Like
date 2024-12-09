@@ -41,4 +41,5 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
-lib/demno.dart
+2048Like.pdf
+Rapport de projet 2048 Like.pdf
