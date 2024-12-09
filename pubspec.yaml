@@ -13,9 +13,6 @@ dependencies:
 
   cupertino_icons: ^1.0.8
 
-  # Easily detect Swipes
-  flutter_swipe_detector: ^2.0.0
-
   # icon
   flutter_svg: ^2.0.11
 
@@ -30,12 +27,6 @@ dependencies:
 
   #audioplayers:
   audioplayers: ^6.1.0
-
-  #timer
-  stop_watch_timer: ^3.2.1
-
-  #shared_preferences
-  shared_preferences: ^2.3.3
 
   # text animations
   widget_and_text_animator: ^1.1.5

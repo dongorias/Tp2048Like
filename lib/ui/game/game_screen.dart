@@ -1,6 +1,3 @@
-import 'dart:math' hide log;
-
-import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tp2048/res/app_theme.dart';
@@ -8,14 +5,15 @@ import 'package:tp2048/ui/game/widget/game_over.dart';
 import 'package:tp2048/ui/game/widget/grid_painter.dart';
 
 import '../../controller/game_controller.dart';
+import 'widget/confetti_anim.dart';
 import 'widget/count_down_timer.dart';
 
 enum But {
   b2048('2048', 2048),
   b1024('1024', 1024),
   b512('512', 512),
-  b256('256', 256);
-  //b4('4', 4);
+  b256('256', 256),
+  b32('32', 32);
 
   const But(this.label, this.value);
 
@@ -219,7 +217,7 @@ class GameScreenState extends State<GameScreen> {
                   },
                 ),
 
-              if (gameCtlre.gameWinner)
+              if (gameCtlre.gameWinner && !gameCtlre.gameWinnerContinue)
                 // Overlay content
                 Positioned(
                   child: Stack(
@@ -254,7 +252,9 @@ class GameScreenState extends State<GameScreen> {
                                         },
                                         child: const Text("Terminer")),
                                     TextButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          gameCtlre.winnerContinue();
+                                        },
                                         child: const Text("Continuer")),
                                   ],
                                 )
@@ -280,30 +280,4 @@ class GameScreenState extends State<GameScreen> {
   }
 }
 
-class ConfettiAnim extends StatelessWidget {
-  const ConfettiAnim({super.key, required this.gameCtlr});
 
-  final GameController gameCtlr;
-
-  @override
-  Widget build(BuildContext context) {
-    return ConfettiWidget(
-      confettiController: gameCtlr.confettiController,
-      blastDirection: pi / 2,
-      maxBlastForce: 50,
-      minBlastForce: 10,
-      emissionFrequency: 0.05,
-      numberOfParticles: 50,
-      blastDirectionality: BlastDirectionality.explosive,
-      gravity: 0.01,
-      shouldLoop: false,
-      colors: const [
-        Colors.green,
-        Colors.blue,
-        Colors.pink,
-        Colors.orange,
-        Colors.purple,
-      ],
-    );
-  }
-}

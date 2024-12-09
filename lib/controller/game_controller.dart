@@ -18,6 +18,7 @@ class GameController with ChangeNotifier {
   bool _gameOver = false;
   bool get gameOver => _gameOver;
 
+
   final ValueNotifier<bool> _timerReset = ValueNotifier(false);
   ValueNotifier<bool> get timerReset => _timerReset;
 
@@ -29,6 +30,9 @@ class GameController with ChangeNotifier {
 
   bool _gameWinner = false;
   bool get gameWinner => _gameWinner;
+
+  bool _gameWinnerContinue = false;
+  bool get gameWinnerContinue => _gameWinnerContinue;
 
   int _moveCount = 0;
   int get moveCount => _moveCount;
@@ -69,6 +73,11 @@ void winnerFinish(){
   _gameWinner = false;
   _moveCount = 0;
   reset();
+  notifyListeners();
+}
+
+void winnerContinue(){
+  _gameWinnerContinue = true;
   notifyListeners();
 }
 
@@ -145,7 +154,7 @@ void gameOverReset(){
       resetTimer(true);();
     } else if (isGameWon()) {
       _gameWinner = true;
-      resetTimer(true);();
+      resetTimer(true);
       checkAndPlayConfetti(true);
     }
     notifyListeners();
