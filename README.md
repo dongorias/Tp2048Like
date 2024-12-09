@@ -64,7 +64,6 @@ une expérience fluide et personnalisable avec plusieurs fonctionnalités innova
 | Name                                                                   | Usage               |
 |------------------------------------------------------------------------|---------------------|
 | [**Flutter Svg**](https://pub.dev/packages/flutter_svg)                | Draw SVG files icon |
-| [**Auto route**](https://pub.dev/packages/auto_route)                  | Route navigation    |
 | [**Provider**](https://pub.dev/packages/provider)                      | State Management    |
 | [**Confetti**](https://pub.dev/packages/confetti)                      | Animation celebrate |
 | [**Audio Players**](https://pub.dev/packages/audioplayers)             | Play audio files    |

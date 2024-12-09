@@ -16,8 +16,6 @@ dependencies:
   # icon
   flutter_svg: ^2.0.11
 
-  #navigation
-  auto_route: ^9.2.2
 
   # Manage State
   provider: ^6.1.2
