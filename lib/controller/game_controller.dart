@@ -151,9 +151,11 @@ void gameOverReset(){
   void checkIfGameOverOrGameWon() {
     if (isGameOver()) {
       _gameOver = true;
+      playSound(SoundType.lose);
       resetTimer(true);();
     } else if (isGameWon()) {
       _gameWinner = true;
+      playSound(SoundType.win);
       resetTimer(true);
       checkAndPlayConfetti(true);
     }
